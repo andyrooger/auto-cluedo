@@ -1,0 +1,16 @@
+'''
+Created on 28 Dec 2012
+
+@author: andyrooger
+'''
+from engine.Fact import Fact
+
+class CardReceived(Fact):
+    '''
+    Describes the point at which a card is picked up.
+    '''
+
+
+    def __init__(self, player):
+        super().__init__()
+        self.player = player
