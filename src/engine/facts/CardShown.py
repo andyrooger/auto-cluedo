@@ -15,3 +15,6 @@ class CardShown(Fact):
         self.shower = shower
         self.showee = showee
         self.entry = entry
+    
+    def _key(self):
+        return (super()._key(), self.shower, self.showee, self.entry)
