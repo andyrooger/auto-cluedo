@@ -14,7 +14,7 @@ class Accusation(Fact):
         super().__init__(factstore)
         self.player = player
         self.correct = correct
-        self.entries = entries
+        self.entries = set(entries)
     
     def _key(self):
         return (super()._key(), self.player, self.correct, self.entries)

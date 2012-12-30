@@ -15,7 +15,7 @@ class Guess(Fact):
         self.asker = asker
         self.answerer = answerer
         self.showed = showed
-        self.entries = entries
+        self.entries = set(entries)
     
     def _key(self):
         return (super()._key(), self.asker, self.answerer, self.showed, self.entries)
