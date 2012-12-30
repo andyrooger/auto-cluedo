@@ -11,6 +11,6 @@ class CardReceived(Fact):
     '''
 
 
-    def __init__(self, player):
-        super().__init__()
+    def __init__(self, factstore, player):
+        super().__init__(factstore)
         self.player = player

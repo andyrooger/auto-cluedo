@@ -11,8 +11,8 @@ class Accusation(Fact):
     '''
 
 
-    def __init__(self, player, correct, *entries):
-        super().__init__()
+    def __init__(self, factstore, player, correct, *entries):
+        super().__init__(factstore)
         self.player = player
         self.correct = correct
         self.entries = entries

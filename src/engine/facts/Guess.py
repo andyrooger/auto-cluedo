@@ -11,8 +11,8 @@ class Guess(Fact):
     '''
 
 
-    def __init__(self, asker, answerer, showed, *entries):
-        super().__init__()
+    def __init__(self, factstore, asker, answerer, showed, *entries):
+        super().__init__(factstore)
         self.asker = asker
         self.answerer = answerer
         self.showed = showed
