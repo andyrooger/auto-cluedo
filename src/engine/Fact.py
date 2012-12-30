@@ -3,6 +3,7 @@ Created on 28 Dec 2012
 
 @author: andyrooger
 '''
+from engine.InformationStore import InformationStore
 
 __last_time = 0
 
@@ -18,8 +19,8 @@ class Fact:
 
     def __init__(self, factstore=None):
         self.at = get_next_time()
-        self.factstore = (factstore or __DEFAULT_FACT_STORE)
-        self.factstore.add_fact(self)
+        self.factstore = (factstore or _DEFAULT_FACT_STORE)
+        self.factstore.add(self)
     
     def _key(self):
         return (self.at, self.factstore)
@@ -33,18 +34,14 @@ class Fact:
     def __hash__(self):
         return hash(self._key())
 
-class FactStore:
+class FactStore(InformationStore):
     '''Stores a collection of facts and allows retrieving them by type or all together.'''
     
-    def __init__(self):
-        self.__facts = set()
-        self.__by_type = {}
-    
-    def add_fact(self, fact):
-        self.__facts.add(fact)
-        type_name = fact.__class__.__name__
-        if not type_name in self.__by_type:
-            self.__by_type[type_name] = set()
-        self.__by_type[type_name].add(fact)
+    def add(self, info):
+        if not isinstance(info, Fact):
+            raise TypeError("Can only add facts to fact store.")
+        if info.factstore is not self:
+            raise ValueError("Fact is not from this store.")
+        InformationStore.add(self, info)
 
-__DEFAULT_FACT_STORE = FactStore()
+_DEFAULT_FACT_STORE = FactStore()
