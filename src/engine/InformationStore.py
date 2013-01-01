@@ -23,3 +23,6 @@ class InformationStore:
     
     def of_type(self, t):
         return set(self.__by_type.get(t.__class__.__name__, set()))
+    
+    def __len__(self):
+        return len(self.__everything)
