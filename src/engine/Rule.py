@@ -28,7 +28,7 @@ from engine.EqualsMixin import EqualsMixin
 class Rule(EqualsMixin, metaclass=abc.ABCMeta):
     '''Describes a way to convert rules and deductions into other deductions.'''
     
-    def __init__(self, fact_filters, deduction_filters):
+    def __init__(self, fact_filters={}, deduction_filters={}):
         self._fact_filters = fact_filters
         self._deduction_filters = deduction_filters
     
