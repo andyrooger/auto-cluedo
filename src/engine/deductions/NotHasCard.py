@@ -7,8 +7,8 @@ Created on 30 Dec 2012
 class NotHasCard(object):
     '''A user definitely does not have a card.'''
     
-    def __init__(self, player, entry, at, *relieson):
-        super().__init__(*relieson)
+    def __init__(self, deductionstore, player, entry, at, *relieson):
+        super().__init__(deductionstore, *relieson)
         self.player = player
         self.entry = entry
         self.at = at

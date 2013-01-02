@@ -8,8 +8,8 @@ from engine.Deduction import Deduction
 class HasCard(Deduction):
     '''Describes a user having a card at a particular time.'''
     
-    def __init__(self, player, entry, at, *relieson):
-        super().__init__(*relieson)
+    def __init__(self, deductionstore, player, entry, at, *relieson):
+        super().__init__(deductionstore, *relieson)
         self.player = player
         self.entry = entry
         self.at = at
