@@ -5,8 +5,6 @@ Created on 2 Jan 2013
 '''
 from cmdui.base.CommandSection import CommandSection
 from cmdui.GameSetupSection import GameSetupSection
-from engine.Engine import Engine
-from engine.rules.InitialHandSize import InitialHandSize
 from cmdui.GamePlaySection import GamePlaySection
 
 class GameSection(CommandSection):
@@ -17,8 +15,5 @@ class GameSection(CommandSection):
     
     def start(self):
         super().start()
-        setup = GameSetupSection().start()
-        engine = Engine([InitialHandSize(setup["player_order"])])
-        GamePlaySection(engine, **setup).start()
-        
-        
+        engine, total_cards, player_order = GameSetupSection().start()
+        GamePlaySection(engine, total_cards, player_order).start()
