@@ -8,7 +8,8 @@ from engine import Fact, Deduction
 class Engine:
     '''Organises all of the processing done using the other classes.'''
     
-    def __init__(self):
+    def __init__(self, rules):
+        self.rules = rules
         self.factstore = Fact.FactStore()
         self.deductionstore = Deduction.DeductionStore()
         self.newfacts = set()
@@ -41,13 +42,26 @@ class Engine:
     
     def _process(self, restrictfacts=None, restrictdeductions=None, recursive=True):
         '''Process all facts and deductions using rules that find relevant information in the restriction groups.'''
+        if restrictfacts is None:
+            restrictfacts = self.factstore.all()
+        if restrictdeductions is None:
+            restrictdeductions = self.deductionstore.all()
         self.newfacts = set()
         self.newdeductions = set()
-        # TODO Processing - add new deductions to self.newdeductions
-        # Can't make new facts here so ignore it
-        if self.newdeductions:
-            if recursive:
-                self._process(self.newfacts, self.newdeductions, recursive)
-            return True
-        else:
-            return False
+        
+        appliers = [rule.get_applier() for rule in self.rules]
+        for applier in appliers:
+            applier.show_facts(restrictfacts)
+            applier.show_deductions(restrictdeductions)
+        
+        for applier in appliers:
+            if applier.seen_relevant_information():
+                applier.apply(self._add_deduction, self.factstore, self.deductionstore)
+        
+        # Can't make new facts here so ignore it, also recursive is done non-recursively to avoid SO
+        created_new = bool(self.newdeductions)
+        if recursive:
+            hasnew = created_new
+            while hasnew:
+                hasnew = self._process(self.newfacts, self.newdeductions, False)
+        return created_new
