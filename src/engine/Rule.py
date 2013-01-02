@@ -15,7 +15,7 @@ class Rule(EqualsMixin, metaclass=abc.ABCMeta):
         self._deduction_filters = deduction_filters
     
     @abc.abstractmethod
-    def apply(self, add, *factsanddeductions):
+    def apply(self, add, allfacts, alldeductions, *factsanddeductions):
         '''Given a set of items, use the add method to add all generated deductions.'''
     
     def get_applier(self, custom_deduction_check=None):
@@ -28,26 +28,37 @@ class RuleApplier:
         '''Takes a list of lamba expressions that accept facts or deductions and say whether they are relevant.'''
         self._factfilters = factfilters
         self._deductionfilters = deductionfilters
-        self._relevant_facts = [[] for _ in self._factfilters]
-        self._relevant_deductions = [[] for _ in self._deductionfilters]
+        self._relevant_facts = [set() for _ in self._factfilters]
+        self._relevant_deductions = [set() for _ in self._deductionfilters]
         self._apply = apply
         self._custom_deduction_check = custom_deduction_check
+    
+    def show_facts(self, facts):
+        '''Show a set of facts'''
+        for fact in facts:
+            self.show_fact(fact)
     
     def show_fact(self, fact):
         '''Show a fact, it will be recorded if it is relevant.'''
         for i, test in enumerate(self._factfilters):
             if test(fact):
-                self._relevant_facts[i].append(fact)
+                self._relevant_facts[i].add(fact)
+    
+    def show_deductions(self, deductions):
+        for deduction in deductions:
+            self.show_deduction(deduction)
     
     def show_deduction(self, deduction):
         '''Show a deduction, it will be recorded if it is relevant.'''
         for i, test in enumerate(self._deductionfilters):
             if test(deduction):
-                self._relevant_deductions[i].append(deduction)
+                self._relevant_deductions[i].add(deduction)
     
     def seen_relevant_information(self):
         '''Has the applier been shown anything at all relevant?'''
-        return any(self._relevant_facts) or any(self._relevant_deductions)
+        if not self._factfilters and not self._deductionfilters:
+            return True # Otherwise this would always be false, and no filters means everything is good.
+        return (any(self._relevant_facts) or any(self._relevant_deductions))
     
     def can_deduce(self):
         '''Does this applier have enough information to deduce anything?'''
@@ -56,6 +67,7 @@ class RuleApplier:
         return (all(facts for facts in self._relevant_facts) and
                 all(deductions for deductions in self._relevant_deductions))
     
-    def apply(self, add):
+    def apply(self, add, allfacts, alldeductions):
         '''Apply the rule using the rule's own apply function.'''
-        self._apply(self, add, *self._relevant_facts.append(self._relevant_deductions))
+        if self.can_deduce():
+            self._apply(self, add, allfacts, alldeductions, *self._relevant_facts.append(self._relevant_deductions))
