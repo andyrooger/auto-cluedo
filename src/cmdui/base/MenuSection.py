@@ -28,12 +28,21 @@ class MenuSection(CommandSection):
         self._show_menu()
     
     def _show_list_menu(self, options):
+        if self._cancelable:
+            options = options + [self._cancelable]
         choice = self._ask_options(options)
+        if choice == self._cancelable:
+            return None
         return self._selected(choice)
     
     def _show_dict_menu(self, options):
+        if self._cancelable:
+            options = options.copy()
+            options[self._cancelable] = None
         choice = self._ask_options(options.keys())
         selection = options[choice]
+        if selection is None and choice == self._cancelable:
+            return None
         if isinstance(selection, str):
             return getattr(self, selection)()
         else:

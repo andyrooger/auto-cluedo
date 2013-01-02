@@ -17,7 +17,7 @@ class MainMenu(MenuSection):
         super().__init__("You have no game running, what would you like to do?",
                          {
                           "Start a new game" : "begin_game"
-                          }, True)
+                          }, "Quit")
     
     def begin_game(self):
         print("Start game")
