@@ -4,6 +4,7 @@ Created on 2 Jan 2013
 @author: andyrooger
 '''
 from cmdui.base.MenuSection import MenuSection
+from cmdui.GameSection import GameSection
 
 class CommandUI:
     '''Main class for the command line UI for this program.'''
@@ -20,5 +21,5 @@ class MainMenu(MenuSection):
                           ], "Quit")
     
     def begin_game(self):
-        print("Start game")
+        GameSection().start()
         return None
