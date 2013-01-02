@@ -6,12 +6,6 @@ Created on 28 Dec 2012
 from engine.InformationStore import InformationStore
 from engine.EqualsMixin import EqualsMixin
 
-__last_time = 0
-
-def get_next_time():
-    __last_time += 1
-    return __last_time
-
 class Fact(EqualsMixin):
     '''
     Describes a fact, something we definitely know about the game
@@ -19,8 +13,8 @@ class Fact(EqualsMixin):
     '''
 
     def __init__(self, factstore=None):
-        self.at = get_next_time()
-        self.factstore = (factstore or _DEFAULT_FACT_STORE)
+        self.factstore = factstore or _DEFAULT_FACT_STORE
+        self.at = self.factstore.get_next_time()
         self.factstore.add(self)
     
     def _key(self):
@@ -28,6 +22,17 @@ class Fact(EqualsMixin):
 
 class FactStore(InformationStore):
     '''Stores a collection of facts and allows retrieving them by type or all together.'''
+    
+    def __init__(self):
+        super().__init__()
+        self._current_time = 0
+    
+    def current_time(self):
+        return self._current_time
+    
+    def get_next_time(self):
+        self._current_time += 1
+        return self._current_time
     
     def add(self, info):
         if not isinstance(info, Fact):
