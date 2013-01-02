@@ -15,9 +15,9 @@ class CommandUI:
 class MainMenu(MenuSection):
     def __init__(self):
         super().__init__("You have no game running, what would you like to do?",
-                         {
-                          "Start a new game" : "begin_game"
-                          }, "Quit")
+                         [
+                          ("Start a new game", "begin_game")
+                          ], "Quit")
     
     def begin_game(self):
         print("Start game")

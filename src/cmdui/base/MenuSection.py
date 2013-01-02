@@ -10,46 +10,40 @@ class MenuSection(CommandSection):
     
     def __init__(self, prompt, options, cancelable):
         '''
-        Initialise with an iterable of options: selection will be passed to _selected().
-        Initialise with a dict of options: keys must be strings for selection values will be called
-        or looked up in this object and called if they are strings.
+        Options is an iterable containing either
+        Strings: shows strings for selections and selection gets passed to _selected()
+        Tuple(string, string/callable): shows first string for selection and second is either called
+        directly or is looked up as a method of this menu and called.
         If cancelable is not None, it will be a cancel option and will return None for the menu and call nothing.
         Otherwise the return from the working method will be called.
         '''
         super().__init__()
         self._prompt = prompt
         self._cancelable = cancelable
-        self._show_menu = ((lambda: self._show_list_menu(options))
-                           if isinstance(options, list)
-                           else (lambda: self._show_dict_menu(options)))
+        self._options = [opt if isinstance(opt, str) else opt[0] for opt in options]
+        self._callbacks = {}
+        for opt in options:
+            if isinstance(opt, str):
+                self._callbacks[opt] = (lambda: self._selected(opt))
+            else:
+                self._callbacks[opt[0]] = getattr(self, opt[1]) if isinstance(opt[1], str) else opt[1]
         
     def start(self):
         super().start()
         self._show_menu()
     
-    def _show_list_menu(self, options):
-        if self._cancelable:
-            options = options + [self._cancelable]
-        choice = self._ask_options(options)
-        if choice == self._cancelable:
+    def _show_menu(self):
+        selection = self._ask_options(self._options)
+        callback = self._callbacks.get(selection)
+        if callback is None:
             return None
-        return self._selected(choice)
-    
-    def _show_dict_menu(self, options):
-        if self._cancelable:
-            options = options.copy()
-            options[self._cancelable] = None
-        choice = self._ask_options(options.keys())
-        selection = options[choice]
-        if selection is None and choice == self._cancelable:
-            return None
-        if isinstance(selection, str):
-            return getattr(self, selection)()
         else:
-            return selection()
+            callback()
     
     def _ask_options(self, options):
         options = list(options)
+        if self._cancelable:
+            options.append(self._cancelable)
         while True:
             print(self._prompt)
             for i, option in enumerate(options):
