@@ -30,10 +30,10 @@ class CardShown(Fact):
     '''
     
     def __init__(self, factstore, shower, showee, entry):
-        super().__init__(factstore)
         self.shower = shower
         self.showee = showee
         self.entry = entry
+        super().__init__(factstore)
     
     def _key(self):
         return (super()._key(), self.shower, self.showee, self.entry)

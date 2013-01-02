@@ -30,8 +30,8 @@ class CardReceived(Fact):
     '''
 
     def __init__(self, factstore, player):
-        super().__init__(factstore)
         self.player = player
+        super().__init__(factstore)
     
     def _key(self):
         return (super()._key(), self.player)

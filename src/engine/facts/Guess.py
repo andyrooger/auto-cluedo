@@ -30,11 +30,11 @@ class Guess(Fact):
     '''
 
     def __init__(self, factstore, asker, answerer, showed, *entries):
-        super().__init__(factstore)
         self.asker = asker
         self.answerer = answerer
         self.showed = showed
         self.entries = set(entries)
+        super().__init__(factstore)
     
     def _key(self):
         return (super()._key(), self.asker, self.answerer, self.showed, self.entries)

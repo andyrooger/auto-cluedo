@@ -30,10 +30,10 @@ class Accusation(Fact):
     '''
 
     def __init__(self, factstore, player, correct, *entries):
-        super().__init__(factstore)
         self.player = player
         self.correct = correct
         self.entries = set(entries)
+        super().__init__(factstore)
     
     def _key(self):
         return (super()._key(), self.player, self.correct, self.entries)
