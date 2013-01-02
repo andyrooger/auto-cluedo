@@ -15,7 +15,7 @@ class Rule(EqualsMixin, metaclass=abc.ABCMeta):
         self._deduction_filters = deduction_filters
     
     @abc.abstractmethod
-    def apply(self, add, allfacts, alldeductions, **factsanddeductions):
+    def apply(self, add, factstore, deductionstore, **factsanddeductions):
         '''Given a set of items, use the add method to add all generated deductions.'''
     
     def get_applier(self, custom_deduction_check=None):
@@ -66,8 +66,8 @@ class RuleApplier:
             return self._custom_deduction_check(self._relevant_facts, self._relevant_deductions)
         return all(self._relevant_facts.values()) and all(self._relevant_deductions.values())
     
-    def apply(self, add, allfacts, alldeductions):
+    def apply(self, add, factstore, deductionstore):
         '''Apply the rule using the rule's own apply function.'''
         if self.can_deduce():
-            self._apply(self, add, allfacts, alldeductions,
+            self._apply(self, add, factstore, deductionstore,
                         **dict(self._relevant_facts, **self._relevant_deductions))

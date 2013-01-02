@@ -13,7 +13,7 @@ class InitialHandSize(Rule):
         super().__init__()
         self.players = players
     
-    def apply(self, add, allfacts, alldeductions):
+    def apply(self, add, factstore, deductionstore):
         for player in self.players:
             add(HandSize, player, 0, 0)
         
